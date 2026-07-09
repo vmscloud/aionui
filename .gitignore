@@ -217,3 +217,7 @@ graphify-out/
 .graphify_python
 
 .snow/
+*.aionui-orig
+*.tmp.png
+dist-web-cli/
+workspace/codegraph-main/

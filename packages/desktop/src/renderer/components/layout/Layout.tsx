@@ -39,8 +39,9 @@ const SidebarIcon: React.FC<{ size?: number; strokeWidth?: number }> = ({ size =
     focusable='false'
     style={{ display: 'inline-block', verticalAlign: 'middle' }}
   >
-    <rect x='6' y='10' width='36' height='28' rx='5' />
-    <line x1='18' y1='10' x2='18' y2='38' />
+    {/* Manggo AI — mango fruit silhouette */}
+    <path d='M24 12 C33 12 39 19 39 27 C39 35 32 40 24 40 C16 40 9 35 9 27 C9 19 15 12 24 12 Z' />
+    <path d='M27 13 C29 8 35 7 39 9 C36 13 31 15 27 16' />
   </svg>
 );
 
@@ -362,20 +363,18 @@ const Layout: React.FC<{
                     viewBox='0 0 80 80'
                     fill='none'
                   >
+                    {/* Manggo AI — mango fruit logo */}
                     <path
-                      key='logo-path-1'
-                      d='M40 20 Q38 22 25 40 Q23 42 26 42 L30 42 Q32 40 40 30 Q48 40 50 42 L54 42 Q57 42 55 40 Q42 22 40 20'
+                      key='logo-mango-body'
+                      d='M40 22 C55 22 64 33 64 45 C64 58 52 66 40 66 C28 66 16 58 16 45 C16 33 25 22 40 22 Z'
                       fill='white'
                     ></path>
-                    <circle key='logo-circle' cx='40' cy='46' r='3' fill='white'></circle>
                     <path
-                      key='logo-path-2'
-                      d='M18 50 Q40 70 62 50'
-                      stroke='white'
-                      strokeWidth='3.5'
-                      fill='none'
-                      strokeLinecap='round'
+                      key='logo-mango-leaf'
+                      d='M45 24 C49 15 60 13 66 16 C61 23 53 26 45 27 Z'
+                      fill='white'
                     ></path>
+                    <ellipse key='logo-mango-hl' cx='32' cy='40' rx='6' ry='9' fill='black' opacity='0.18'></ellipse>
                   </svg>
                 </div>
                 {isSettingsRoute ? (
@@ -393,11 +392,11 @@ const Layout: React.FC<{
                         }
                       }}
                     >
-                      AionUi
+                      Manggo AI
                     </div>
                   </Tooltip>
                 ) : (
-                  <div className='text-16px text-t-primary collapsed-hidden font-semibold'>AionUi</div>
+                  <div className='text-16px text-t-primary collapsed-hidden font-semibold'>Manggo AI</div>
                 )}
                 {isMobile && !collapsed && (
                   <button
