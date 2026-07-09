@@ -216,15 +216,18 @@ const WorkspaceGroupedHistory: React.FC<WorkspaceGroupedHistoryProps> = ({
   // Projects section: collect all workspace groups across timeline sections, ordered by recency.
   const projectGroups = useMemo(() => {
     const seen = new Set<string>();
-    const groups: Array<{ workspace: string; displayName: string; conversations: TChatConversation[] }> = [];
+    const groups: Array<{ workspace: string; displayName: string; conversations: TChatConversation[]; assistantId?: string }> = [];
     for (const section of timelineSections) {
       for (const item of section.items) {
         if (item.type === 'workspace' && item.workspaceGroup && !seen.has(item.workspaceGroup.workspace)) {
           seen.add(item.workspaceGroup.workspace);
+          const groupConversations: TChatConversation[] = item.workspaceGroup.conversations;
           groups.push({
             workspace: item.workspaceGroup.workspace,
             displayName: item.workspaceGroup.display_name,
-            conversations: item.workspaceGroup.conversations,
+            conversations: groupConversations,
+            // Project's mapped assistant: reuse the assistant of the project's most recent conversation.
+            assistantId: groupConversations.find((conv) => conv.assistant?.id)?.assistant?.id,
           });
         }
       }
@@ -562,13 +565,13 @@ const WorkspaceGroupedHistory: React.FC<WorkspaceGroupedHistoryProps> = ({
                               )}
                               onClick={(e) => {
                                 e.stopPropagation();
-                                void navigate('/guid', { state: { workspace: group.workspace } });
+                                void navigate('/guid', { state: { workspace: group.workspace, selectedAssistantId: group.assistantId } });
                               }}
                               onKeyDown={(e) => {
                                 if (e.key === 'Enter' || e.key === ' ') {
                                   e.preventDefault();
                                   e.stopPropagation();
-                                  void navigate('/guid', { state: { workspace: group.workspace } });
+                                  void navigate('/guid', { state: { workspace: group.workspace, selectedAssistantId: group.assistantId } });
                                 }
                               }}
                             >

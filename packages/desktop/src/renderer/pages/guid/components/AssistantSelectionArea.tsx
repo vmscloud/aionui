@@ -134,12 +134,16 @@ const AssistantSelectionArea: React.FC<AssistantSelectionAreaProps> = ({
         data-assistant-backend={assistantRuntimeKey(assistant)}
         data-assistant-selected={isSelected ? 'true' : 'false'}
         type='text'
-        className={`!inline-flex !min-w-0 !h-auto !items-center !gap-6px !rounded-999px !border-none !px-12px !py-8px !text-13px transition-all ${
+        className={`!inline-flex !min-w-0 !h-auto !items-center !gap-6px !rounded-999px !px-12px !py-8px !text-13px transition-all ${
           isSelected
-            ? 'font-600 text-t-primary shadow-sm'
-            : `text-t-secondary opacity-75 hover:opacity-100 ${styles.assistantSelectorInactive}`
+            ? 'font-600 shadow-sm !border-solid !border-1px'
+            : `!border-none text-t-secondary opacity-75 hover:opacity-100 ${styles.assistantSelectorInactive}`
         }`}
-        style={isSelected ? { background: 'var(--bg-base, #fff)' } : { background: 'transparent' }}
+        style={
+          isSelected
+            ? { background: 'var(--bg-base, #fff)', borderColor: '#4E5969', color: '#4E5969' }
+            : { background: 'transparent' }
+        }
         onClick={() => {
           onSelectAssistant(assistant.id);
           setMoreVisible(false);
@@ -154,7 +158,10 @@ const AssistantSelectionArea: React.FC<AssistantSelectionAreaProps> = ({
             <Robot theme='outline' size={14} />
           )}
         </span>
-        <span data-assistant-label='true' className='max-w-180px truncate whitespace-nowrap'>
+        <span
+          data-assistant-label='true'
+          className={isSelected ? 'whitespace-nowrap' : 'max-w-180px truncate whitespace-nowrap'}
+        >
           {label}
         </span>
       </Button>

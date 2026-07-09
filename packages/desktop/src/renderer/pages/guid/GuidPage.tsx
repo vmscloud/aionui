@@ -541,8 +541,14 @@ const GuidPage: React.FC = () => {
   // the dev server (which has no SPA fallback) and 404.
   useEffect(() => {
     if (!resetAssistantRequested && !preselectAssistantId) return;
-    navigate(`${location.pathname}${location.search}${location.hash}`, { replace: true, state: null });
-  }, [resetAssistantRequested, preselectAssistantId, location.pathname, location.search, location.hash, navigate]);
+    // Consume resetAssistant/selectedAssistantId once, but preserve workspace so the
+    // project folder (dir) is not cleared by the state-driven effect above.
+    const preservedWorkspace = (location.state as { workspace?: string } | null)?.workspace;
+    navigate(`${location.pathname}${location.search}${location.hash}`, {
+      replace: true,
+      state: preservedWorkspace ? { workspace: preservedWorkspace } : null,
+    });
+  }, [resetAssistantRequested, preselectAssistantId, location.pathname, location.search, location.hash, location.state, navigate]);
 
   // Agents that use configured model providers instead of ACP probe-based models.
   // Only aionrs now — Gemini runs as a regular ACP backend with ACP-cached models.
