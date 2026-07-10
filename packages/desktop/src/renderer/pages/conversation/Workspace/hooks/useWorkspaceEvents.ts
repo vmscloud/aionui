@@ -16,6 +16,13 @@ interface UseWorkspaceEventsOptions {
 
   // Dependencies from useWorkspaceTree
   refreshWorkspace: () => void;
+  /**
+   * Optional: refresh the file-changes (diff) view. When provided, it is called
+   * on the same filesystem-mutation triggers as refreshWorkspace so the
+   * "Changes" tab updates live as the agent edits files (not only on tab
+   * switch). Silent refresh (no spinner) is expected.
+   */
+  refreshChanges?: () => void;
   clearSelection: () => void;
   setFiles: React.Dispatch<React.SetStateAction<IDirOrFile[]>>;
   setSelected: React.Dispatch<React.SetStateAction<string[]>>;
@@ -43,6 +50,7 @@ export function useWorkspaceEvents(options: UseWorkspaceEventsOptions) {
     conversation_id,
     eventPrefix,
     refreshWorkspace,
+    refreshChanges,
     clearSelection,
     setFiles,
     setSelected,
@@ -99,14 +107,16 @@ export function useWorkspaceEvents(options: UseWorkspaceEventsOptions) {
       return;
     }
     refreshWorkspace();
+    refreshChanges?.();
     throttleTimerRef.current = setTimeout(() => {
       throttleTimerRef.current = null;
       if (pendingRef.current) {
         pendingRef.current = false;
         refreshWorkspace(); // Fire trailing refresh for any calls missed during throttle window
+        refreshChanges?.();
       }
     }, 2000);
-  }, [refreshWorkspace]);
+  }, [refreshWorkspace, refreshChanges]);
 
   // Cleanup throttle timer on unmount
   useEffect(() => {

@@ -19,6 +19,8 @@ type UseFileChangesReturn = {
   loading: boolean;
   snapshotInfo: SnapshotInfo | null;
   refreshChanges: () => Promise<void>;
+  /** Silent refresh (no loading spinner) — for live/event-driven updates. */
+  silentRefresh: () => Promise<void>;
   stageFile: (file_path: string) => Promise<void>;
   stageAll: () => Promise<void>;
   unstageFile: (file_path: string) => Promise<void>;
@@ -135,6 +137,7 @@ export function useFileChanges({ workspace }: UseFileChangesParams): UseFileChan
     loading,
     snapshotInfo,
     refreshChanges,
+    silentRefresh,
     stageFile,
     stageAll,
     unstageFile,

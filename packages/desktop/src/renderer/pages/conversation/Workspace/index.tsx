@@ -120,6 +120,7 @@ const ChatWorkspace: React.FC<WorkspaceProps> = ({
     conversation_id,
     eventPrefix,
     refreshWorkspace: treeHook.refreshWorkspace,
+    refreshChanges: fileChangesHook.silentRefresh,
     clearSelection: treeHook.clearSelection,
     setFiles: treeHook.setFiles,
     setSelected: treeHook.setSelected,
