@@ -249,6 +249,13 @@ const AgentModeSelector: React.FC<AgentModeSelectorProps> = ({
           ? baseCompactLabel
           : `${compactLabelPrefix} · ${baseCompactLabel}`
         : baseCompactLabel);
+    // Hide the permission-mode chip entirely when the backend advertises no
+    // modes (e.g. Hermes ACP agents don't expose a permission mode). Showing a
+    // non-functional selector misleads users into thinking a permission change
+    // took effect. Only applies to the mode chip, not the agent-name pill.
+    if (compactLabelType === 'mode' && modes.length === 0) {
+      return null;
+    }
     if (!canInteract && legacyCompactBehavior) {
       return null;
     }
