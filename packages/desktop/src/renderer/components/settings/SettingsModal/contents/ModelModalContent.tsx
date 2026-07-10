@@ -20,6 +20,7 @@ import { useProvidersQuery } from '@/renderer/hooks/agent/useModelProviderList';
 import { useSettingsViewMode } from '../settingsViewContext';
 import SettingsPageHeader from '@/renderer/pages/settings/components/SettingsPageHeader';
 import { consumePendingDeepLink } from '@/renderer/hooks/system/useDeepLink';
+import HermesModelsSection from './HermesModelsSection';
 import '../model-provider.css';
 
 /**
@@ -390,6 +391,10 @@ const ModelModalContent: React.FC = () => {
 
       {/* Content Area */}
       <AionScrollArea className='flex-1 min-h-0' disableOverflow={isPageMode}>
+        {/* Manggo: operator-selected model exposure for Hermes agents */}
+        <div className='mb-16px'>
+          <HermesModelsSection />
+        </div>
         {!data || data.length === 0 ? (
           <div className='flex flex-col items-center justify-center py-40px'>
             <Info theme='outline' size='48' className='text-t-secondary mb-16px' />

@@ -226,11 +226,12 @@ export const useGuidAssistantSelection = ({
     // Manggo custom Hermes agents (hermes acp) only advertise the primary
     // provider's models over ACP; present the curated full catalog (Claude
     // first) so Claude/newer models are selectable. Non-Hermes agents keep the
-    // ACP-advertised catalog as-is.
+    // ACP-advertised catalog as-is. The operator can narrow the catalog via
+    // the 'hermes.enabledModels' setting (Settings → Models).
     const agentMeta = selectedAssistant?.agent;
     const isHermesCustom = agentMeta?.type === 'acp' && agentMeta?.source === 'custom';
     if (isHermesCustom) {
-      return buildHermesCuratedModelInfo(selectedManagedAgentRuntimeCatalog);
+      return buildHermesCuratedModelInfo(selectedManagedAgentRuntimeCatalog, configService.get('hermes.enabledModels'));
     }
     return buildAgentRuntimeModelInfo(selectedManagedAgentRuntimeCatalog);
   }, [selectedManagedAgentRuntimeCatalog, selectedAssistant?.agent]);

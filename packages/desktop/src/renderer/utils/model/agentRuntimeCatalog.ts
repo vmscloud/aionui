@@ -194,11 +194,17 @@ const HERMES_DEFAULT_MODEL_ID = 'anthropic:claude-sonnet-5';
  * Build model info for a Manggo custom Hermes agent: curated catalog (Claude
  * first) merged with the ACP-advertised models. Defaults the current selection
  * to Claude while preserving a valid ACP-advertised current model if present.
+ *
+ * `enabledModelIds` (from the 'hermes.enabledModels' client setting) narrows
+ * the dropdown to operator-selected models; unset/empty shows the full catalog.
  */
-export function buildHermesCuratedModelInfo(agent: AgentRuntimeCatalog | null | undefined): AcpModelInfo {
+export function buildHermesCuratedModelInfo(
+  agent: AgentRuntimeCatalog | null | undefined,
+  enabledModelIds?: string[]
+): AcpModelInfo {
   const advertised = agent ? buildAgentRuntimeModelInfo(agent) : null;
   const seen = new Set<string>();
-  const available_models: { id: string; label: string; description?: string }[] = [];
+  let available_models: { id: string; label: string; description?: string }[] = [];
 
   for (const option of HERMES_CURATED_MODELS) {
     if (seen.has(option.value)) continue;
@@ -211,7 +217,15 @@ export function buildHermesCuratedModelInfo(agent: AgentRuntimeCatalog | null | 
     available_models.push(model);
   }
 
-  const current_model_id = seen.has(HERMES_DEFAULT_MODEL_ID)
+  // Operator filter: keep only explicitly enabled models. Falls back to the
+  // full catalog when the filter is unset/empty or would leave nothing.
+  if (enabledModelIds && enabledModelIds.length > 0) {
+    const enabled = new Set(enabledModelIds);
+    const filtered = available_models.filter((model) => enabled.has(model.id));
+    if (filtered.length > 0) available_models = filtered;
+  }
+
+  const current_model_id = available_models.some((model) => model.id === HERMES_DEFAULT_MODEL_ID)
     ? HERMES_DEFAULT_MODEL_ID
     : (available_models[0]?.id ?? null);
   const matched = available_models.find((model) => model.id === current_model_id);

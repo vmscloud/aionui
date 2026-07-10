@@ -20,6 +20,8 @@ export type ConfigKeyMap = {
   'theme.userThemes': Theme[];
   'workspace.pasteConfirm': boolean | undefined;
   'guid.lastAssistantId': string | undefined;
+  /** Provider-qualified model ids to expose in Hermes agent model dropdowns; unset/empty = full curated catalog. */
+  'hermes.enabledModels': string[] | undefined;
   'upload.saveToWorkspace': boolean | undefined;
   'system.closeToTray': boolean | undefined;
   'system.notificationEnabled': boolean | undefined;
