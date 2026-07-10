@@ -13,6 +13,7 @@ import {
   buildAgentRuntimeModelInfo,
   buildAgentRuntimeSlashCommands,
   buildAgentRuntimeThoughtLevelOption,
+  buildHermesCuratedModelInfo,
   type AgentRuntimeCatalog,
   type AgentRuntimeDerivedOption,
 } from '@/renderer/utils/model/agentRuntimeCatalog';
@@ -221,10 +222,18 @@ export const useGuidAssistantSelection = ({
         : undefined,
     [managedAgentRuntimeCatalog, selectedAssistant?.agent_id]
   );
-  const selectedAgentRuntimeModelInfo = useMemo(
-    () => buildAgentRuntimeModelInfo(selectedManagedAgentRuntimeCatalog),
-    [selectedManagedAgentRuntimeCatalog]
-  );
+  const selectedAgentRuntimeModelInfo = useMemo(() => {
+    // Manggo custom Hermes agents (hermes acp) only advertise the primary
+    // provider's models over ACP; present the curated full catalog (Claude
+    // first) so Claude/newer models are selectable. Non-Hermes agents keep the
+    // ACP-advertised catalog as-is.
+    const agentMeta = selectedAssistant?.agent;
+    const isHermesCustom = agentMeta?.type === 'acp' && agentMeta?.source === 'custom';
+    if (isHermesCustom) {
+      return buildHermesCuratedModelInfo(selectedManagedAgentRuntimeCatalog);
+    }
+    return buildAgentRuntimeModelInfo(selectedManagedAgentRuntimeCatalog);
+  }, [selectedManagedAgentRuntimeCatalog, selectedAssistant?.agent]);
   const currentAgentAvailableCommands = useMemo(
     () => buildAgentRuntimeSlashCommands(selectedManagedAgentRuntimeCatalog),
     [selectedManagedAgentRuntimeCatalog]

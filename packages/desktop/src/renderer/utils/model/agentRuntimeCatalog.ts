@@ -161,6 +161,68 @@ export function buildAgentRuntimeModelInfo(agent: AgentRuntimeCatalog | null | u
   );
 }
 
+/**
+ * Manggo AI custom Hermes agents run `hermes acp`, whose ACP handshake only
+ * advertises the current primary provider's models (e.g. openai-codex). Hermes
+ * itself can also route to Anthropic (Claude) via its fallback chain, but that
+ * is invisible over ACP. To let operators pick Claude from the Manggo UI, we
+ * present a curated full catalog (Claude first) for these agents, merged with
+ * whatever the ACP session advertised so nothing is lost.
+ *
+ * This is a UI-side convenience: selecting `anthropic:*` sends the provider-
+ * qualified id to Hermes ACP `session/set_model`, which switches the provider.
+ */
+export const HERMES_CURATED_MODELS: AgentRuntimeSelectOption[] = [
+  { value: 'anthropic:claude-sonnet-5', label: 'Claude Sonnet 5', description: 'Anthropic' },
+  { value: 'anthropic:claude-opus-4-8', label: 'Claude Opus 4.8', description: 'Anthropic' },
+  { value: 'anthropic:claude-sonnet-4-6', label: 'Claude Sonnet 4.6', description: 'Anthropic' },
+  { value: 'anthropic:claude-opus-4-7', label: 'Claude Opus 4.7', description: 'Anthropic' },
+  { value: 'anthropic:claude-opus-4-6', label: 'Claude Opus 4.6', description: 'Anthropic' },
+  { value: 'anthropic:claude-haiku-4-5-20251001', label: 'Claude Haiku 4.5', description: 'Anthropic' },
+  { value: 'anthropic:claude-fable-5', label: 'Claude Fable 5', description: 'Anthropic' },
+  { value: 'openai-codex:gpt-5.6-sol', label: 'gpt-5.6-sol', description: 'OpenAI Codex' },
+  { value: 'openai-codex:gpt-5.6-terra', label: 'gpt-5.6-terra', description: 'OpenAI Codex' },
+  { value: 'openai-codex:gpt-5.6-luna', label: 'gpt-5.6-luna', description: 'OpenAI Codex' },
+  { value: 'openai-codex:gpt-5.5', label: 'gpt-5.5', description: 'OpenAI Codex' },
+  { value: 'openai-codex:gpt-5.4', label: 'gpt-5.4', description: 'OpenAI Codex' },
+  { value: 'openai-codex:gpt-5.4-mini', label: 'gpt-5.4-mini', description: 'OpenAI Codex' },
+];
+
+const HERMES_DEFAULT_MODEL_ID = 'anthropic:claude-sonnet-5';
+
+/**
+ * Build model info for a Manggo custom Hermes agent: curated catalog (Claude
+ * first) merged with the ACP-advertised models. Defaults the current selection
+ * to Claude while preserving a valid ACP-advertised current model if present.
+ */
+export function buildHermesCuratedModelInfo(agent: AgentRuntimeCatalog | null | undefined): AcpModelInfo {
+  const advertised = agent ? buildAgentRuntimeModelInfo(agent) : null;
+  const seen = new Set<string>();
+  const available_models: { id: string; label: string; description?: string }[] = [];
+
+  for (const option of HERMES_CURATED_MODELS) {
+    if (seen.has(option.value)) continue;
+    seen.add(option.value);
+    available_models.push({ id: option.value, label: option.label, description: option.description });
+  }
+  for (const model of advertised?.available_models ?? []) {
+    if (seen.has(model.id)) continue;
+    seen.add(model.id);
+    available_models.push(model);
+  }
+
+  const current_model_id = seen.has(HERMES_DEFAULT_MODEL_ID)
+    ? HERMES_DEFAULT_MODEL_ID
+    : (available_models[0]?.id ?? null);
+  const matched = available_models.find((model) => model.id === current_model_id);
+
+  return {
+    current_model_id,
+    current_model_label: matched?.label ?? current_model_id,
+    available_models,
+  };
+}
+
 function normalizeModeOption(value: unknown): AgentModeOption | null {
   if (typeof value === 'string' && value.trim()) {
     return { value, label: value };
