@@ -52,6 +52,14 @@ export type AvailableBackendModelOption = {
 export type AvailableBackend = {
   id: string;
   name: string;
+  /**
+   * Label shown in the assistant editor's Engine → Agent selector. For Hermes
+   * ACP custom agents this is the underlying Hermes profile/agent identifier
+   * (e.g. `platform-ops-developer`), so the Engine field surfaces the real
+   * runtime agent rather than the assistant-facing display name. Falls back to
+   * `name` when the backend exposes no distinct engine identity.
+   */
+  engineLabel?: string;
   runtimeKey: string;
   isExtension?: boolean;
   /** Agent icon/avatar (raw value from the backend catalog), for the dropdown. */

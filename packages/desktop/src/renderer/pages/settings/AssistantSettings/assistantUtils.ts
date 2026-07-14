@@ -205,9 +205,18 @@ export const buildAssistantEditorBackends = (
       continue;
     }
 
+    // Engine → Agent selector should surface the real Hermes runtime agent
+    // (profile identifier) rather than the assistant-facing display name.
+    // For Hermes ACP custom agents the backend catalog carries that identifier
+    // in `description` (e.g. `platform-ops-developer`); everything else keeps
+    // showing its normal name.
+    const engineIdentity =
+      agent.agent_type === 'acp' && agent.agent_source === 'custom' ? agent.description?.trim() || undefined : undefined;
+
     backendMap.set(agentId, {
       id: agentId,
       name: agent.name_i18n?.[localeKey] || agent.name,
+      engineLabel: engineIdentity,
       runtimeKey,
       isExtension: agent.isExtension,
       // Prefer the agent's own avatar/icon; the dropdown falls back to the logo

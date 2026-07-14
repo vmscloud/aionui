@@ -443,7 +443,7 @@ const AssistantEditorSections: React.FC<AssistantEditorSectionsProps> = ({ edito
                 return (
                   <span className='flex items-center gap-8px'>
                     {renderAgentAvatar(selected)}
-                    <span className='truncate'>{selected.name}</span>
+                    <span className='truncate'>{selected.engineLabel || selected.name}</span>
                   </span>
                 );
               }}
@@ -452,7 +452,7 @@ const AssistantEditorSections: React.FC<AssistantEditorSectionsProps> = ({ edito
                 <Select.Option key={option.id} value={option.id}>
                   <span className='flex items-center gap-8px'>
                     {renderAgentAvatar(option)}
-                    <span className='truncate'>{option.name}</span>
+                    <span className='truncate'>{option.engineLabel || option.name}</span>
                     {option.isExtension ? (
                       <Tag size='small' color='arcoblue'>
                         ext
