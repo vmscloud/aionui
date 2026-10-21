@@ -16,7 +16,7 @@ env:
 jobs:
   e2e-artifacts:
     name: E2E Artifacts (Linux)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 25
 
     steps:

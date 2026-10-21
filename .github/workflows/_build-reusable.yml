@@ -35,7 +35,7 @@ env:
 jobs:
   code-quality:
     name: Code Quality
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     if: ${{ !inputs.skip_code_quality }}
 
     steps:
@@ -665,7 +665,7 @@ jobs:
 
   build-summary:
     name: Build Summary
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [code-quality, build]
     if: always()
 

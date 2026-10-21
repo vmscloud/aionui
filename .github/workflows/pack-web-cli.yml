@@ -32,7 +32,7 @@ env:
 jobs:
   code-quality:
     name: Code Quality
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     if: ${{ !inputs.skip_code_quality }}
     steps:
       - name: Checkout code
@@ -79,7 +79,7 @@ jobs:
         include:
           - { platform: darwin, arch: arm64, os: macos-14 }
           - { platform: darwin, arch: x64, os: macos-14 }
-          - { platform: linux, arch: x64, os: ubuntu-latest }
+          - { platform: linux, arch: x64, os: ubuntu-24.04 }
           - { platform: linux, arch: arm64, os: ubuntu-24.04-arm }
           - { platform: win32, arch: x64, os: windows-2022 }
 
@@ -134,7 +134,7 @@ jobs:
 
   prepare-install-script:
     name: Prepare install-web.sh for release
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: pack-web-cli
     if: ${{ always() && needs.pack-web-cli.result == 'success' }}
 
@@ -177,7 +177,7 @@ jobs:
 
   smoke-test:
     name: Smoke test web-cli tarball (Linux x86_64)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: pack-web-cli
     if: ${{ always() && needs.pack-web-cli.result == 'success' }}
     container:
@@ -207,7 +207,7 @@ jobs:
 
   smoke-test-install:
     name: Smoke test install-web.sh (Linux x86_64)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [pack-web-cli, prepare-install-script]
     if: ${{ always() && needs.pack-web-cli.result == 'success' && needs.prepare-install-script.result == 'success' }}
     container:

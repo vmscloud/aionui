@@ -17,7 +17,7 @@ jobs:
   code-quality:
     name: Code Quality
     if: github.event.pull_request.draft == false
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - name: Checkout code
@@ -48,19 +48,19 @@ jobs:
         run: prek run --from-ref origin/${{ github.base_ref }} --to-ref HEAD
 
   unit-tests-ubuntu:
-    name: Unit Tests (ubuntu-latest)
-    runs-on: ubuntu-latest
+    name: Unit Tests (ubuntu-24.04)
+    runs-on: ubuntu-24.04
     steps:
       - run: echo "Docs-only PR, skipping unit tests."
 
   unit-tests-macos:
     name: Unit Tests (macos-14)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - run: echo "Docs-only PR, skipping unit tests."
 
   unit-tests-windows:
     name: Unit Tests (windows-2022)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - run: echo "Docs-only PR, skipping unit tests."

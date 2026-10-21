@@ -21,7 +21,7 @@ permissions:
 jobs:
   verify-cask:
     name: Verify Homebrew Cask
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Get expected version
